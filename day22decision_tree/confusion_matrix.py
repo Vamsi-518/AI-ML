@@ -1,0 +1,24 @@
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import confusion_matrix
+X = [
+    [1, 40], [2, 45], [3, 50], [4, 60],
+    [5, 70], [6, 80], [7, 90], [8, 95],
+    [2, 50], [6, 85], [3, 55], [7, 88]
+]
+y = [0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1]
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.25,
+    random_state=42,
+    stratify=y
+)
+model = DecisionTreeClassifier(max_depth=3, random_state=42)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+matrix = confusion_matrix(y_test, y_pred, labels=[0, 1])
+print("Confusion Matrix:")
+print(matrix)
+print("\nLabels: 0 = Fail, 1 = Pass")
+print("Rows = Actual; Columns = Predicted")
