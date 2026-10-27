@@ -1,0 +1,15 @@
+
+from sklearn.metrics import confusion_matrix
+from prediction import make_predictions
+def display_confusion_matrix():
+    y_test, predictions = make_predictions()
+    matrix = confusion_matrix(
+        y_test,
+        predictions,
+        labels=[0, 1, 2]
+    )
+    print("\nConfusion Matrix:")
+    print(matrix)
+    return matrix
+if __name__ == "__main__":
+    display_confusion_matrix()
