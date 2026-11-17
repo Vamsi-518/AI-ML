@@ -1,4 +1,3 @@
-
 from nltk.tokenize import word_tokenize, sent_tokenize
 import nltk
 # Download tokenizer data
