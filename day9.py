@@ -372,3 +372,171 @@ else:
         result = max(result, max_product)
 
     print("Maximum Product:", result)
+
+#Infosys Python Coding Assignments – Next 10 Programs (Set 3)
+
+#1. Find the Leaders in an Array
+arr = list(map(int, input("Enter array: ").split()))
+
+leaders = []
+max_right = float('-inf')
+for num in reversed(arr):
+    if num > max_right:
+        leaders.append(num)
+        max_right = num
+print("Leaders:", leaders[::-1])
+
+#2. Find the Equilibrium Index
+arr = list(map(int, input("Enter array: ").split()))
+total = sum(arr)
+left_sum = 0
+found = False
+for i in range(len(arr)):
+    right_sum = total - left_sum - arr[i]
+    if left_sum == right_sum:
+        print("Equilibrium Index:", i)
+        found = True
+    left_sum += arr[i]
+if not found:
+    print("No Equilibrium Index")
+
+#3. Find the Longest Consecutive Sequence
+arr = list(map(int, input("Enter array: ").split()))
+
+nums = set(arr)
+longest = 0
+
+for num in nums:
+    if num - 1 not in nums:
+        current = num
+        count = 1
+
+        while current + 1 in nums:
+            current += 1
+            count += 1
+
+        longest = max(longest, count)
+
+print("Longest Consecutive Sequence:", longest)
+
+#4. Find the Product of Array Except Self
+arr = list(map(int, input("Enter array: ").split()))
+
+n = len(arr)
+result = [1] * n
+prefix = 1
+for i in range(n):
+    result[i] = prefix
+    prefix *= arr[i]
+suffix = 1
+for i in range(n - 1, -1, -1):
+    result[i] *= suffix
+    suffix *= arr[i]
+print("Product Array:", result)
+
+#5. Find the Minimum Difference Between Two Elements
+arr = list(map(int, input("Enter array: ").split()))
+
+if len(arr) < 2:
+    print("Need at least two elements")
+else:
+    arr.sort()
+    min_diff = float('inf')
+    pair = None
+    for i in range(1, len(arr)):
+        diff = arr[i] - arr[i - 1]
+        if diff < min_diff:
+            min_diff = diff
+            pair = (arr[i - 1], arr[i])
+    print("Minimum Difference:", min_diff)
+    print("Pair:", pair)
+
+#6. Check Whether Two Strings Are Rotations
+s1 = input("Enter first string: ")
+s2 = input("Enter second string: ")
+
+if len(s1) == len(s2) and s2 in (s1 + s1):
+    print("Strings are rotations")
+else:
+    print("Strings are not rotations")
+
+#7. Find the First Non-Repeating Character
+s = input("Enter a string: ")
+
+frequency = {}
+
+for char in s:
+    frequency[char] = frequency.get(char, 0) + 1
+
+found = False
+
+for char in s:
+    if frequency[char] == 1:
+        print("First Non-Repeating Character:", char)
+        found = True
+        break
+
+if not found:
+    print("No Non-Repeating Character")
+
+#8. Find the Trapping Rain Water
+arr = list(map(int, input("Enter heights: ").split()))
+left = 0
+right = len(arr) - 1
+left_max = 0
+right_max = 0
+water = 0
+while left < right:
+    if arr[left] <= arr[right]:
+        if arr[left] >= left_max:
+            left_max = arr[left]
+        else:
+            water += left_max - arr[left]
+        left += 1
+    else:
+        if arr[right] >= right_max:
+            right_max = arr[right]
+        else:
+            water += right_max - arr[right]
+        right -= 1
+print("Trapped Rain Water:", water)
+
+#9. Find the Number of Islands in a Matrix
+rows = int(input("Enter rows: "))
+cols = int(input("Enter columns: "))
+
+grid = []
+
+for i in range(rows):
+    grid.append(list(map(int, input().split())))
+
+def dfs(r, c):
+    if (r < 0 or r >= rows or
+        c < 0 or c >= cols or
+        grid[r][c] == 0):
+        return
+    grid[r][c] = 0
+    dfs(r + 1, c)
+    dfs(r - 1, c)
+    dfs(r, c + 1)
+    dfs(r, c - 1)
+islands = 0
+for i in range(rows):
+    for j in range(cols):
+        if grid[i][j] == 1:
+            islands += 1
+            dfs(i, j)
+print("Number of Islands:", islands)
+
+#10. Coin Change – Count Number of Ways
+coins = list(map(int, input("Enter coins: ").split()))
+amount = int(input("Enter amount: "))
+if amount < 0 or any(c <= 0 for c in coins):
+    print("Invalid input")
+else:
+    dp = [0] * (amount + 1)
+    dp[0] = 1
+    for coin in coins:
+        for i in range(coin, amount + 1):
+            dp[i] += dp[i - coin]
+    print("Number of Ways:", dp[amount])
