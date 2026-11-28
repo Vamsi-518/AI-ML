@@ -540,3 +540,302 @@ else:
         for i in range(coin, amount + 1):
             dp[i] += dp[i - coin]
     print("Number of Ways:", dp[amount])
+
+#Infosys Python Coding Assignments – Set 4 (10 Advanced Programs)
+
+
+#1. Generate All Permutations of a String
+def permute(s, answer=""):
+    if len(s) == 0:
+        print(answer)
+        return
+
+    for i in range(len(s)):
+        ch = s[i]
+        remaining = s[:i] + s[i+1:]
+        permute(remaining, answer + ch)
+
+s = input("Enter a string: ")
+permute(s)
+
+#2. Generate All Subsets of an Array
+def subsets(arr, index=0, current=None):
+    if current is None:
+        current = []
+    if index == len(arr):
+        print(current)
+        return
+    subsets(arr, index + 1, current)
+    subsets(arr, index + 1, current + [arr[index]])
+arr = list(map(int, input("Enter array: ").split()))
+subsets(arr)
+
+#3. N-Queens Problem
+def solve_n_queens(n):
+    board = [-1] * n
+    solutions = []
+
+    def backtrack(row):
+        if row == n:
+            solutions.append(board.copy())
+            return
+
+        for col in range(n):
+            safe = True
+
+            for prev_row in range(row):
+                prev_col = board[prev_row]
+
+                if (prev_col == col or
+                    abs(prev_col - col) == abs(prev_row - row)):
+                    safe = False
+                    break
+
+            if safe:
+                board[row] = col
+                backtrack(row + 1)
+                board[row] = -1
+
+    backtrack(0)
+    return solutions
+
+
+n = int(input("Enter N: "))
+solutions = solve_n_queens(n)
+
+print("Total Solutions:", len(solutions))
+
+for solution in solutions:
+    for col in solution:
+        print(" ".join(
+            "Q" if j == col else "." for j in range(n)
+        ))
+    print()
+
+#4. Binary Search – First and Last Occurrence
+def first_occurrence(arr, target):
+    left, right = 0, len(arr) - 1
+    result = -1
+
+    while left <= right:
+        mid = (left + right) // 2
+
+        if arr[mid] == target:
+            result = mid
+            right = mid - 1
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return result
+
+
+def last_occurrence(arr, target):
+    left, right = 0, len(arr) - 1
+    result = -1
+
+    while left <= right:
+        mid = (left + right) // 2
+
+        if arr[mid] == target:
+            result = mid
+            left = mid + 1
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return result
+arr = list(map(int, input("Enter sorted array: ").split()))
+target = int(input("Enter target: "))
+print("First:", first_occurrence(arr, target))
+print("Last:", last_occurrence(arr, target))
+
+#5. Search in a Rotated Sorted Array
+arr = list(map(int, input("Enter array: ").split()))
+target = int(input("Enter target: "))
+
+left = 0
+right = len(arr) - 1
+result = -1
+
+while left <= right:
+    mid = (left + right) // 2
+
+    if arr[mid] == target:
+        result = mid
+        break
+
+    if arr[left] <= arr[mid]:
+        if arr[left] <= target < arr[mid]:
+            right = mid - 1
+        else:
+            left = mid + 1
+    else:
+        if arr[mid] < target <= arr[right]:
+            left = mid + 1
+        else:
+            right = mid - 1
+print("Index:", result)
+
+#6. Shortest Path in an Unweighted Graph (BFS)
+from collections import deque
+n = int(input("Enter number of vertices: "))
+edges = int(input("Enter number of edges: "))
+graph = [[] for _ in range(n)]
+for _ in range(edges):
+    u, v = map(int, input().split())
+    graph[u].append(v)
+    graph[v].append(u)
+start = int(input("Enter source: "))
+end = int(input("Enter destination: "))
+queue = deque([start])
+visited = {start}
+parent = {start: None}
+while queue:
+    node = queue.popleft()
+    if node == end:
+        break
+    for neighbor in graph[node]:
+        if neighbor not in visited:
+            visited.add(neighbor)
+            parent[neighbor] = node
+            queue.append(neighbor)
+if end not in visited:
+    print("No path found")
+else:
+    path = []
+    current = end
+    while current is not None:
+        path.append(current)
+        current = parent[current]
+    path.reverse()
+    print("Shortest Path:", path)
+    print("Distance:", len(path) - 1)
+
+#7. Detect Cycle in an Undirected Graph
+n = int(input("Enter vertices: "))
+e = int(input("Enter edges: "))
+
+graph = [[] for _ in range(n)]
+
+for _ in range(e):
+    u, v = map(int, input().split())
+    graph[u].append(v)
+    graph[v].append(u)
+
+
+def has_cycle(node, parent, visited):
+    visited.add(node)
+
+    for neighbor in graph[node]:
+        if neighbor not in visited:
+            if has_cycle(neighbor, node, visited):
+                return True
+        elif neighbor != parent:
+            return True
+
+    return False
+
+
+visited = set()
+cycle = False
+
+for i in range(n):
+    if i not in visited:
+        if has_cycle(i, -1, visited):
+            cycle = True
+            break
+print("Cycle Detected" if cycle else "No Cycle")
+
+#8. 0/1 Knapsack Problem
+n = int(input("Enter number of items: "))
+
+weights = list(map(int, input("Enter weights: ").split()))
+values = list(map(int, input("Enter values: ").split()))
+
+capacity = int(input("Enter capacity: "))
+
+if (len(weights) != n or len(values) != n or
+        capacity < 0 or any(w < 0 for w in weights)):
+    print("Invalid input")
+else:
+    dp = [[0] * (capacity + 1) for _ in range(n + 1)]
+
+    for i in range(1, n + 1):
+        for w in range(capacity + 1):
+
+            if weights[i - 1] <= w:
+                dp[i][w] = max(
+                    values[i - 1] + dp[i - 1][w - weights[i - 1]],
+                    dp[i - 1][w]
+                )
+            else:
+                dp[i][w] = dp[i - 1][w]
+    print("Maximum Value:", dp[n][capacity])
+
+#9. Edit Distance Between Two Strings
+s1 = input("Enter first string: ")
+s2 = input("Enter second string: ")
+
+m = len(s1)
+n = len(s2)
+
+dp = [[0] * (n + 1) for _ in range(m + 1)]
+
+for i in range(m + 1):
+    dp[i][0] = i
+
+for j in range(n + 1):
+    dp[0][j] = j
+
+for i in range(1, m + 1):
+    for j in range(1, n + 1):
+
+        if s1[i - 1] == s2[j - 1]:
+            dp[i][j] = dp[i - 1][j - 1]
+        else:
+            dp[i][j] = 1 + min(
+                dp[i - 1][j],
+                dp[i][j - 1],
+                dp[i - 1][j - 1]
+            )
+print("Minimum Edit Distance:", dp[m][n])
+
+#10. Sudoku Solver Using Backtracking
+def is_safe(board, row, col, num):
+    for i in range(9):
+        if board[row][i] == num:
+            return False
+        if board[i][col] == num:
+            return False
+    start_row = (row // 3) * 3
+    start_col = (col // 3) * 3
+    for i in range(start_row, start_row + 3):
+        for j in range(start_col, start_col + 3):
+            if board[i][j] == num:
+                return False
+    return True
+def solve(board):
+    for row in range(9):
+        for col in range(9):
+            if board[row][col] == 0:
+                for num in range(1, 10):
+                    if is_safe(board, row, col, num):
+                        board[row][col] = num
+                        if solve(board):
+                            return True
+                        board[row][col] = 0
+                return False
+    return True
+board = []
+print("Enter Sudoku (use 0 for empty cells):")
+for _ in range(9):
+    board.append(list(map(int, input().split())))
+if solve(board):
+    print("Solved Sudoku:")
+
+    for row in board:
+        print(*row)
+else:
+    print("No solution exists")
